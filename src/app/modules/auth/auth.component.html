@@ -1,0 +1,20 @@
+<div class="flex h-screen w-screen">
+  <div class="auth-bg bg-primary hidden flex-1 items-center justify-center bg-cover lg:flex">
+   
+      <img src="./assets/images/incident-management.jpg" alt="dashboard widget" style="height: 100%; width: 100%; object-fit: cover;"/>
+     
+      
+  
+  </div>
+  <div class="bg-background flex flex-1 items-center justify-center">
+    <div class="max-w-md overflow-y-auto px-4 sm:w-[500px]">
+      <!-- logo -->
+      <div class="flex items-center justify-center">
+       
+        <b class="text-4xl text-foreground pl-3 font-bold"> INCIDENT REPORT </b>
+      </div>
+      <!-- Route -->
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
