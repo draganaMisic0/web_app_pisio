@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { GoogleAuthService } from 'src/app/core/services/google-auth.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -14,14 +15,16 @@ import { GoogleAuthService } from 'src/app/core/services/google-auth.service';
   providers: [GoogleAuthService]
 })
 export class SignInComponent implements OnInit {
+
+  public userProfile: any = { name: 'Guest', photo: '/src/assets/images/guest.jpg' };
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
 
-  public googleAuthService = inject(GoogleAuthService) ;
 
-  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router
-    
+  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, 
+    private userService: UserService,
+    private googleAuthService: GoogleAuthService
   ) {}
 
   onClick() {
@@ -33,6 +36,11 @@ export class SignInComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    //this.userProfile=this.googleAuthService.getProfileData();
+    console.log(this.userProfile.name);
+    this.userService.setUser(this.userProfile);
+
   }
 
   get f() {
@@ -43,7 +51,6 @@ export class SignInComponent implements OnInit {
     this.passwordTextType = !this.passwordTextType;
   }
   onGoogleLogin(){
-    console.log("Hi");
     this.googleAuthService.login();
 
   }

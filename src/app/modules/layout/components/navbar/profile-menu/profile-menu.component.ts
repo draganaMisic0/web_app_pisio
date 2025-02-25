@@ -1,16 +1,19 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
+import { GoogleAuthService } from 'src/app/core/services/google-auth.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-profile-menu',
   templateUrl: './profile-menu.component.html',
   styleUrls: ['./profile-menu.component.css'],
-  imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule],
+  imports: [ClickOutsideDirective, NgClass, RouterModule, AngularSvgIconModule],
+  providers: [GoogleAuthService],
   animations: [
     trigger('openClose', [
       state(
@@ -33,8 +36,9 @@ import { ClickOutsideDirective } from '../../../../../shared/directives/click-ou
       transition('closed => open', [animate('0.2s')]),
     ]),
   ],
+  
 })
-export class ProfileMenuComponent implements OnInit {
+export class ProfileMenuComponent implements OnInit, OnDestroy {
   
   public isOpen = false;
 
@@ -89,10 +93,41 @@ export class ProfileMenuComponent implements OnInit {
   ];
 
   public themeMode = ['light', 'dark'];
+  public userProfile: any = { name: 'Guest', picture: 'assets/images/guest.jpg' };
+  public userProfileSubscription$: any;
+  constructor(public themeService: ThemeService, 
+              private userService: UserService,
+              private router: Router,
+              private googleAuthService: GoogleAuthService,
+              private cdr: ChangeDetectorRef) {}
 
-  constructor(public themeService: ThemeService) {}
+  
+  ngOnInit() : void {
+   /*
+   this.userProfileSubscription$ =  this.googleAuthService.onProfileChange().subscribe((profile) => {
+    if(profile)
+    {
+      this.userProfile = profile;
+    }
+    console.log("user subscription fired");
+    console.log(profile);
+    this.cdr.detectChanges();
+   });
+   */
 
-  ngOnInit(): void {}
+   this.userProfileSubscription$ = this.googleAuthService.onProfileChange().subscribe((profile: any) => {
+    console.log("Subscription fired");
+    console.log(profile);
+    this.userProfile = profile;
+    this.cdr.detectChanges();
+   });
+
+   this.userProfile = this.googleAuthService.getProfileData();
+  }
+
+  ngOnDestroy(): void {
+    this.userProfileSubscription$.unsubscribe();
+  }
 
   public toggleMenu(): void {
     this.isOpen = !this.isOpen;
@@ -109,5 +144,10 @@ export class ProfileMenuComponent implements OnInit {
     this.themeService.theme.update((theme) => {
       return { ...theme, color: color };
     });
+  }
+
+  handleLogout(){
+    this.googleAuthService.logout();
+    this.router.navigate(['auth/sign-in']);
   }
 }

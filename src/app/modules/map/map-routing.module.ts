@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard.component';
-import { MapComponent } from '../map/map.component';
+import { MapComponent } from './map.component';
+
 //import { NftComponent } from './pages/nft/nft.component';
 
 const routes: Routes = [
   
   {
     path: '',
-    component: DashboardComponent,
+    component: MapComponent,
     children: [
-     
       //{ path: '', redirectTo: 'nfts', pathMatch: 'full' },
      // { path: 'nfts', component: NftComponent },
       
@@ -23,4 +22,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DashboardRoutingModule {}
+export class MapRoutingModule {}

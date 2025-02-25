@@ -1,0 +1,13 @@
+.map-container{
+    height: 75vh;
+    width: 70%;
+    border-radius: 20px;
+  
+    
+  }
+  
+  .flex-container {
+    display: flex; /* Establishes flexbox */
+    justify-content: 100px; /* Aligns items with space in between */
+    align-items: row; /* Centers items vertically */
+  }
